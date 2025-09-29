@@ -39,9 +39,6 @@ function App() {
         <div className="logo-bar">
           <img src={mansutLogo} alt="Mansüt Gıda Logo" className="logo-img" />
           <span className="logo-text">Mansüt Gıda</span>
-          <button className="dark-mode-toggle" onClick={toggleDarkMode}>
-            {isDarkMode ? '☀️' : '🌙'}
-          </button>
         </div>
         <nav className={`navbar ${isMenuOpen ? 'navbar-open' : ''}`}>
           <NavLink to="/" className={({isActive}) => isActive ? 'active' : ''} end onClick={closeMenu}>Anasayfa</NavLink>
@@ -50,6 +47,9 @@ function App() {
           <NavLink to="/lezzet-yolculugu" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>Lezzetin Yolculuğu</NavLink>
           <NavLink to="/bayiliklerimiz" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>Bayiliklerimiz</NavLink>
           <NavLink to="/iletisim" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>İletişim</NavLink>
+          <button className="dark-mode-toggle" onClick={toggleDarkMode}>
+            {isDarkMode ? '☀️' : '🌙'}
+          </button>
         </nav>
         <button className="hamburger" onClick={toggleMenu}>
           <span></span>
@@ -135,7 +135,7 @@ function Home() {
           <p>Ürünlerimizde doğallık ve katkısızlık ön planda. Sağlığınız için en iyisini sunuyoruz.</p>
         </div>
         <div className="feature-card">
-          <img src="https://img.icons8.com/color/96/000000/farmer.png" alt="Çiftçi Destekli" />
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRa2w_7kEI81KS1TrWF7wH-Lnd10PIjHgCrCA&s" alt="Çiftçi Destekli" />
           <h3>Çiftçi Destekli</h3>
           <p>Yerel üreticilerden alınan sütlerle hem kaliteyi hem de sürdürülebilirliği destekliyoruz.</p>
         </div>
@@ -153,7 +153,7 @@ function Hakkimizda() {
   return (
     <div className="page about-page">
       <div className="about-header">
-        <img src="https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=800&q=80" alt="Mansüt Gıda Fabrika" className="about-img" />
+        <img src="https://lh3.googleusercontent.com/gps-cs/AIky0YUDC-cje0H6zsS0ClYR-_ZrmpYBx_5Qxp1qW_mohqWBZMzYoaQ98yZ66UJcYFGySOlO6ObsdnwAcnsCdtMHTXM0aRXhh-fsusLD__FEMW9Gdf5dqHdyc7HGxbcaCGb-UEeGoh0E=w750-h401-p-k-no" alt="Mansüt Gıda Fabrika" className="about-img" />
         <div className="about-content">
           <h1>Hakkımızda</h1>
           <p>Mansüt Gıda, 1998 yılından bu yana süt ve süt ürünleri sektöründe faaliyet göstermektedir. Amacımız, en taze ve sağlıklı ürünleri, en yüksek kalite standartlarında sizlere sunmaktır. Doğaya ve insana saygılı üretim anlayışımızla, sürdürülebilir tarımı ve yerel çiftçileri destekliyoruz.</p>
@@ -178,7 +178,7 @@ function LezzetYolculugu() {
     },
     {
       title: '2. Analiz ve Kontrol',
-      img: 'https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=600&q=80',
+      img: 'https://media.istockphoto.com/id/1453049364/tr/foto%C4%9Fraf/a-dairy-factory-worker-is-checking-on-milk-processing-machine-and-smiling-at-the-tablet.jpg?s=612x612&w=0&k=20&c=2qYY5E6y_qkbIEBXuM5RFrcqaqpbSynrjelcOxZRqkg=',
       desc: 'Fabrikamıza ulaşan sütler, laboratuvarlarımızda titizlikle analiz edilir. Kalite ve güvenlik standartlarına uygunluğu kontrol edilir.'
     },
     {
@@ -233,10 +233,6 @@ function Bayiliklerimiz() {
           <h3>Antalya</h3>
           <p>Yetkili: Mehmet Kaya<br/>Tel: 0242 456 78 90</p>
         </div>
-        <div className="bayi-card">
-          <h3>Ankara</h3>
-          <p>Yetkili: Zeynep Koç<br/>Tel: 0312 234 56 78</p>
-        </div>
       </div>
       <div className="bayilik-basvuru">
         <h2>Bayilik Başvurusu</h2>
@@ -254,7 +250,6 @@ function Urunlerimiz() {
         { name: 'Yarım Yağlı Süt', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=300&q=80' },
         { name: 'Yağsız Süt', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=300&q=80' },
         { name: 'Organik Süt', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=300&q=80' },
-        { name: 'Laktozsuz Süt', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=300&q=80' }
       ]
     },
     {
@@ -264,7 +259,7 @@ function Urunlerimiz() {
         { name: 'Yarım Yağlı Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
         { name: 'Meyveli Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
         { name: 'Organik Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
-        { name: 'Yunan Yoğurdu', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' }
+        
       ]
     },
     {
@@ -274,7 +269,7 @@ function Urunlerimiz() {
         { name: 'Kaşar Peyniri', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=300&q=80' },
         { name: 'Tulum Peyniri', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=300&q=80' },
         { name: 'Lor Peyniri', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=300&q=80' },
-        { name: 'Çökelek', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=300&q=80' }
+        
       ]
     },
     {
@@ -284,7 +279,7 @@ function Urunlerimiz() {
         { name: 'Kefir', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
         { name: 'Sütlü İçecekler', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
         { name: 'Meyveli Ayran', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
-        { name: 'Probiyotik İçecek', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' }
+     
       ]
     }
   ];
