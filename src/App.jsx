@@ -1,35 +1,119 @@
-import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import './App.css'
 import mansutLogo from './assets/mansut.png';
 
 function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+    
+    // Dark mode from localStorage
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    setIsDarkMode(savedDarkMode);
+    document.body.classList.toggle('dark-mode', savedDarkMode);
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !isDarkMode;
+    setIsDarkMode(newDarkMode);
+    localStorage.setItem('darkMode', newDarkMode.toString());
+    document.body.classList.toggle('dark-mode', newDarkMode);
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <Router>
       <div className="header-sticky-wrap">
         <div className="logo-bar">
-          {/* Logo görseli veya metni */}
           <img src={mansutLogo} alt="Mansüt Gıda Logo" className="logo-img" />
           <span className="logo-text">Mansüt Gıda</span>
+          <button className="dark-mode-toggle" onClick={toggleDarkMode}>
+            {isDarkMode ? '☀️' : '🌙'}
+          </button>
         </div>
-        <nav className="navbar">
-          <NavLink to="/" className={({isActive}) => isActive ? 'active' : ''} end>Anasayfa</NavLink>
-          <NavLink to="/hakkimizda" className={({isActive}) => isActive ? 'active' : ''}>Hakkımızda</NavLink>
-          <NavLink to="/lezzet-yolculugu" className={({isActive}) => isActive ? 'active' : ''}>Lezzetin Yolculuğu</NavLink>
-          <NavLink to="/bayiliklerimiz" className={({isActive}) => isActive ? 'active' : ''}>Bayiliklerimiz</NavLink>
-          <NavLink to="/iletisim" className={({isActive}) => isActive ? 'active' : ''}>İletişim</NavLink>
+        <nav className={`navbar ${isMenuOpen ? 'navbar-open' : ''}`}>
+          <NavLink to="/" className={({isActive}) => isActive ? 'active' : ''} end onClick={closeMenu}>Anasayfa</NavLink>
+          <NavLink to="/hakkimizda" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>Hakkımızda</NavLink>
+          <NavLink to="/urunlerimiz" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>Ürünlerimiz</NavLink>
+          <NavLink to="/lezzet-yolculugu" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>Lezzetin Yolculuğu</NavLink>
+          <NavLink to="/bayiliklerimiz" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>Bayiliklerimiz</NavLink>
+          <NavLink to="/iletisim" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>İletişim</NavLink>
         </nav>
+        <button className="hamburger" onClick={toggleMenu}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
       <div className="page-container">
-        <Routes>
+        <AnimatedRoutes />
+      </div>
+      <Footer />
+    </Router>
+  )
+}
+
+// Animated Routes Component
+function AnimatedRoutes() {
+  const location = useLocation();
+  
+  const pageVariants = {
+    initial: {
+      opacity: 0,
+      x: 50,
+      scale: 0.95
+    },
+    in: {
+      opacity: 1,
+      x: 0,
+      scale: 1
+    },
+    out: {
+      opacity: 0,
+      x: -50,
+      scale: 0.95
+    }
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.4
+  };
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial="initial"
+        animate="in"
+        exit="out"
+        variants={pageVariants}
+        transition={pageTransition}
+      >
+        <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/hakkimizda" element={<Hakkimizda />} />
+          <Route path="/urunlerimiz" element={<Urunlerimiz />} />
           <Route path="/lezzet-yolculugu" element={<LezzetYolculugu />} />
           <Route path="/bayiliklerimiz" element={<Bayiliklerimiz />} />
           <Route path="/iletisim" element={<Iletisim />} />
         </Routes>
-      </div>
-    </Router>
-  )
+      </motion.div>
+    </AnimatePresence>
+  );
 }
 
 // Sayfa bileşenleri (şimdilik basit placeholder)
@@ -161,6 +245,113 @@ function Bayiliklerimiz() {
     </div>
   );
 }
+function Urunlerimiz() {
+  const productCategories = [
+    {
+      title: 'Süt Ürünleri',
+      products: [
+        { name: 'Tam Yağlı Süt', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Yarım Yağlı Süt', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Yağsız Süt', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Organik Süt', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Laktozsuz Süt', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=300&q=80' }
+      ]
+    },
+    {
+      title: 'Yoğurt Çeşitleri',
+      products: [
+        { name: 'Tam Yağlı Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Yarım Yağlı Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Meyveli Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Organik Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Yunan Yoğurdu', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' }
+      ]
+    },
+    {
+      title: 'Peynir Çeşitleri',
+      products: [
+        { name: 'Beyaz Peynir', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Kaşar Peyniri', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Tulum Peyniri', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Lor Peyniri', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Çökelek', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=300&q=80' }
+      ]
+    },
+    {
+      title: 'İçecekler',
+      products: [
+        { name: 'Ayran', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Kefir', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Sütlü İçecekler', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Meyveli Ayran', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Probiyotik İçecek', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' }
+      ]
+    }
+  ];
+
+  return (
+    <div className="page urunler-page">
+      <div className="products-header">
+        <h1>Ürünlerimiz</h1>
+        <p>Doğal ve katkısız süt ürünlerimizin geniş yelpazesini keşfedin</p>
+      </div>
+      
+      <div className="product-categories">
+        {productCategories.map((category, categoryIndex) => (
+          <div key={categoryIndex} className="product-category">
+            <h2 className="category-title">{category.title}</h2>
+            <div className="products-grid">
+              {category.products.map((product, productIndex) => (
+                <motion.div 
+                  key={productIndex} 
+                  className="product-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: productIndex * 0.1,
+                    ease: "easeOut"
+                  }}
+                  whileHover={{ 
+                    y: -8,
+                    transition: { duration: 0.2 }
+                  }}
+                >
+                  <div className="product-image">
+                    <img src={product.image} alt={product.name} />
+                    <div className="product-overlay">
+                      <button className="product-btn">Detay</button>
+                    </div>
+                  </div>
+                  <h3 className="product-name">{product.name}</h3>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="quality-badge">
+        <h3>Kalite Garantisi</h3>
+        <div className="quality-features">
+          <div className="quality-item">
+            <span className="quality-icon">✅</span>
+            <span>Doğal ve Katkısız</span>
+          </div>
+          <div className="quality-item">
+            <span className="quality-icon">🏆</span>
+            <span>ISO Kalite Sertifikası</span>
+          </div>
+          <div className="quality-item">
+            <span className="quality-icon">🌱</span>
+            <span>Organik Üretim</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Iletisim() {
   return (
     <div className="page iletisim-page">
@@ -199,4 +390,49 @@ function Iletisim() {
     </div>
   );
 }
+
+function Footer() {
+  return (
+    <footer className="footer">
+      <div className="footer-content">
+        <div className="footer-section">
+          <h3>Mansüt Gıda</h3>
+          <p>Doğallığın ve lezzetin buluşma noktası. 25+ yıllık tecrübemizle sizlere en kaliteli süt ürünlerini sunuyoruz.</p>
+          <div className="social-links">
+            <a href="https://instagram.com/mansutgida" target="_blank" rel="noopener noreferrer">📷 Instagram</a>
+            <a href="https://wa.me/905551234567" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+            <a href="mailto:info@mansutgida.com">📧 E-posta</a>
+          </div>
+        </div>
+        
+        <div className="footer-section">
+          <h4>Hızlı Linkler</h4>
+          <ul>
+            <li><a href="/">Anasayfa</a></li>
+            <li><a href="/hakkimizda">Hakkımızda</a></li>
+            <li><a href="/urunlerimiz">Ürünlerimiz</a></li>
+            <li><a href="/lezzet-yolculugu">Lezzetin Yolculuğu</a></li>
+            <li><a href="/bayiliklerimiz">Bayiliklerimiz</a></li>
+            <li><a href="/iletisim">İletişim</a></li>
+          </ul>
+        </div>
+        
+        <div className="footer-section">
+          <h4>İletişim Bilgileri</h4>
+          <div className="contact-details">
+            <p>📍 Örnek Mah. Süt Cad. No:12, 34000 İstanbul</p>
+            <p>📞 0212 123 45 67</p>
+            <p>✉️ info@mansutgida.com</p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="footer-bottom">
+        <p>&copy; 2024 Mansüt Gıda. Tüm hakları saklıdır.</p>
+        <p>Doğal, katkısız ve kaliteli süt ürünleri</p>
+      </div>
+    </footer>
+  );
+}
+
 export default App
