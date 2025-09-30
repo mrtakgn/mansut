@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import './App.css'
 import mansutLogo from './assets/mansut.png';
+import { Link } from "react-router-dom";
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -125,7 +126,7 @@ function Home() {
         <div className="hero-content">
           <h1>Doğallığın ve Lezzetin Buluşma Noktası</h1>
           <p>Mansüt Gıda, taptaze süt ve süt ürünleriyle sofralarınıza sağlık ve lezzet getiriyor. Yerel çiftçilerden alınan sütler, modern tesislerimizde özenle işlenir ve Türkiye’nin dört bir yanına ulaştırılır.</p>
-          <a href="/lezzet-yolculugu" className="hero-btn">Lezzetin Yolculuğu</a>
+         <Link to="/lezzet-yolculugu" className='hero-btn'>Lezzet Yolculuğu</Link>
         </div>
       </div>
       <div className="home-features">
