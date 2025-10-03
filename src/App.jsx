@@ -1,9 +1,38 @@
 import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import './App.css'
 import mansutLogo from './assets/mansut.png';
 import { Link } from "react-router-dom";
+import ScrollToTop from './ScrollToTop';
+// Shared stages data for Lezzetin Yolculuğu
+const journeyStages = [
+  {
+    title: '1. Süt Toplama',
+    img: 'https://www.avcitarim.com.tr/site/o/86025/2024/01/avci-tarim-06.jpg',
+    desc: 'Mansüt Gıda olarak, en taze ve kaliteli sütleri yerel çiftçilerimizden özenle topluyoruz. Sütlerimiz, hijyenik koşullarda ve soğuk zincir bozulmadan fabrikamıza ulaştırılır.'
+  },
+  {
+    title: '2. Analiz ve Kontrol',
+    img: 'https://media.istockphoto.com/id/1453049364/tr/foto%C4%9Fraf/a-dairy-factory-worker-is-checking-on-milk-processing-machine-and-smiling-at-the-tablet.jpg?s=612x612&w=0&k=20&c=2qYY5E6y_qkbIEBXuM5RFrcqaqpbSynrjelcOxZRqkg=',
+    desc: 'Fabrikamıza ulaşan sütler, laboratuvarlarımızda titizlikle analiz edilir. Kalite ve güvenlik standartlarına uygunluğu kontrol edilir.'
+  },
+  {
+    title: '3. Pastörizasyon',
+    img: 'https://media.istockphoto.com/id/183861941/tr/foto%C4%9Fraf/quality-control.jpg?s=612x612&w=0&k=20&c=y5G-OJK_72gYFRaaCAQ_FLsengW0yfN-TMXL6tk2YN8=',
+    desc: 'Sütlerimiz, besin değerini koruyacak şekilde modern tesislerimizde pastörize edilir. Böylece hem sağlıklı hem de lezzetli ürünler elde edilir.'
+  },
+  {
+    title: '4. Üretim ve Paketleme',
+    img: 'https://atcprocess.com/images/upload/_1738952532.jpg',
+    desc: 'Yoğurt, peynir, ayran ve diğer süt ürünlerimiz, hijyenik ortamlarda el değmeden üretilir ve özenle paketlenir.'
+  },
+  {
+    title: '5. Dağıtım',
+    img: 'https://img.freepik.com/foto-gratis/close-up-tangan-memegang-kotak_23-2149035949.jpg',
+    desc: 'Ürünlerimiz, soğuk zincir araçlarımızla Türkiye’nin dört bir yanına tazeliğini koruyarak ulaştırılır.'
+  },
+];
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,6 +65,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="header-sticky-wrap">
         <div className="logo-bar">
           <img src={mansutLogo} alt="Mansüt Gıda Logo" className="logo-img" />
@@ -45,7 +75,7 @@ function App() {
           <NavLink to="/" className={({isActive}) => isActive ? 'active' : ''} end onClick={closeMenu}>Anasayfa</NavLink>
           <NavLink to="/hakkimizda" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>Hakkımızda</NavLink>
           <NavLink to="/urunlerimiz" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>Ürünlerimiz</NavLink>
-          <NavLink to="/lezzet-yolculugu" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>Lezzetin Yolculuğu</NavLink>
+          
           <NavLink to="/bayiliklerimiz" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>Bayiliklerimiz</NavLink>
           <NavLink to="/iletisim" className={({isActive}) => isActive ? 'active' : ''} onClick={closeMenu}>İletişim</NavLink>
           <button className="dark-mode-toggle" onClick={toggleDarkMode}>
@@ -108,7 +138,6 @@ function AnimatedRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/hakkimizda" element={<Hakkimizda />} />
           <Route path="/urunlerimiz" element={<Urunlerimiz />} />
-          <Route path="/lezzet-yolculugu" element={<LezzetYolculugu />} />
           <Route path="/bayiliklerimiz" element={<Bayiliklerimiz />} />
           <Route path="/iletisim" element={<Iletisim />} />
         </Routes>
@@ -119,14 +148,74 @@ function AnimatedRoutes() {
 
 // Sayfa bileşenleri (şimdilik basit placeholder)
 function Home() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [slideWidth, setSlideWidth] = useState(0);
+  const sliderRef = useRef(null);
+  const GAP = 0; // full-width slide, no gap
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (sliderRef.current) {
+        setSlideWidth(sliderRef.current.offsetWidth);
+      }
+    };
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % journeyStages.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+  const handleDragEnd = (_e, info) => {
+    const threshold = 50;
+    if (info.offset.x < -threshold) {
+      setCurrentIndex((prev) => (prev + 1) % journeyStages.length);
+    } else if (info.offset.x > threshold) {
+      setCurrentIndex((prev) => (prev - 1 + journeyStages.length) % journeyStages.length);
+    }
+  };
   return (
     <div className="page home-page">
+      <div className="journey-slider">
+        <div className="journey-slider-header">
+          <h2>Lezzetin Yolculuğu</h2>
+          <p>Çiftlikten sofraya uzanan özenli serüvenimizi kaydırarak keşfedin.</p>
+        </div>
+        <div className="journey-viewport" ref={sliderRef}>
+          <motion.div
+            className="journey-track"
+            drag="x"
+            dragConstraints={{ left: -(slideWidth + GAP) * (journeyStages.length - 1), right: 0 }}
+            onDragEnd={handleDragEnd}
+            animate={{ x: -(currentIndex * (slideWidth + GAP)) }}
+            transition={{ type: 'tween', duration: 0.5 }}
+          >
+            {journeyStages.map((stage, idx) => (
+              <div className="journey-card" key={idx}>
+                <img src={stage.img} alt={stage.title} />
+                <div className="journey-info">
+                  <h3>{stage.title}</h3>
+                  <p>{stage.desc}</p>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+        <div className="journey-dots">
+          {journeyStages.map((_, i) => (
+            <button key={i} className={i === currentIndex ? 'dot active' : 'dot'} onClick={() => setCurrentIndex(i)} aria-label={`Adım ${i+1}`}></button>
+          ))}
+        </div>
+      </div>
       <div className="home-hero">
-        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80" alt="Mansüt Gıda Süt Ürünleri" className="hero-img" />
+        <img src="https://media.istockphoto.com/id/1241482623/tr/foto%C4%9Fraf/s%C3%BCt-tereya%C4%9F%C4%B1-peynir-ile-s%C3%BCt-%C3%BCr%C3%BCn%C3%BC-%C3%A7e%C5%9Fitleri.jpg?s=612x612&w=0&k=20&c=j-YLhpGEiLJhyE4LV72ohufhHmWStSae8Qd8Pp4t-r8=" alt="Mansüt Gıda Süt Ürünleri" className="hero-img" />
         <div className="hero-content">
           <h1>Doğallığın ve Lezzetin Buluşma Noktası</h1>
           <p>Mansüt Gıda, taptaze süt ve süt ürünleriyle sofralarınıza sağlık ve lezzet getiriyor. Yerel çiftçilerden alınan sütler, modern tesislerimizde özenle işlenir ve Türkiye’nin dört bir yanına ulaştırılır.</p>
-         <Link to="/lezzet-yolculugu" className='hero-btn'>Lezzet Yolculuğu</Link>
+          <Link to="/urunlerimiz" className='hero-btn'>Ürünlerimizi Keşfet</Link>
         </div>
       </div>
       <div className="home-features">
@@ -146,15 +235,17 @@ function Home() {
           <p>Her aşamada titiz kalite kontrolü ile güvenilir ve lezzetli ürünler üretiyoruz.</p>
         </div>
       </div>
+
+      {/* Lezzetin Yolculuğu Slider */}
+      
     </div>
   );
 }
-
 function Hakkimizda()  {
   return (
     <div className="page about-page">
       <div className="about-header">
-        <img src="https://lh3.googleusercontent.com/gps-cs/AIky0YUDC-cje0H6zsS0ClYR-_ZrmpYBx_5Qxp1qW_mohqWBZMzYoaQ98yZ66UJcYFGySOlO6ObsdnwAcnsCdtMHTXM0aRXhh-fsusLD__FEMW9Gdf5dqHdyc7HGxbcaCGb-UEeGoh0E=w750-h401-p-k-no" alt="Mansüt Gıda Fabrika" className="about-img" />
+        <img src="https://media.istockphoto.com/id/513470606/tr/foto%C4%9Fraf/still-life-with-dairy-product.jpg?s=612x612&w=0&k=20&c=ktaf_2H_L_R54icBHiRcIEOoGETZX0TewrEi3pjvG6w=" alt="Mansüt Gıda Fabrika" className="about-img" />
         <div className="about-content">
           <h1>Hakkımızda</h1>
           <p>Mansüt Gıda, 1999 yılından bu yana süt ve süt ürünleri sektöründe faaliyet göstermektedir. Amacımız, en taze ve sağlıklı ürünleri, en yüksek kalite standartlarında sizlere sunmaktır. Doğaya ve insana saygılı üretim anlayışımızla, sürdürülebilir tarımı ve yerel çiftçileri destekliyoruz.</p>
@@ -169,53 +260,7 @@ function Hakkimizda()  {
     </div>
   );
 }
-
-function LezzetYolculugu() {
-  const stages = [
-    {
-      title: '1. Süt Toplama',
-      img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
-      desc: 'Mansüt Gıda olarak, en taze ve kaliteli sütleri yerel çiftçilerimizden özenle topluyoruz. Sütlerimiz, hijyenik koşullarda ve soğuk zincir bozulmadan fabrikamıza ulaştırılır.'
-    },
-    {
-      title: '2. Analiz ve Kontrol',
-      img: 'https://media.istockphoto.com/id/1453049364/tr/foto%C4%9Fraf/a-dairy-factory-worker-is-checking-on-milk-processing-machine-and-smiling-at-the-tablet.jpg?s=612x612&w=0&k=20&c=2qYY5E6y_qkbIEBXuM5RFrcqaqpbSynrjelcOxZRqkg=',
-      desc: 'Fabrikamıza ulaşan sütler, laboratuvarlarımızda titizlikle analiz edilir. Kalite ve güvenlik standartlarına uygunluğu kontrol edilir.'
-    },
-    {
-      title: '3. Pastörizasyon',
-      img: 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80',
-      desc: 'Sütlerimiz, besin değerini koruyacak şekilde modern tesislerimizde pastörize edilir. Böylece hem sağlıklı hem de lezzetli ürünler elde edilir.'
-    },
-    {
-      title: '4. Üretim ve Paketleme',
-      img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80',
-      desc: 'Yoğurt, peynir, ayran ve diğer süt ürünlerimiz, hijyenik ortamlarda el değmeden üretilir ve özenle paketlenir.'
-    },
-    {
-      title: '5. Dağıtım',
-      img: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80',
-      desc: 'Ürünlerimiz, soğuk zincir araçlarımızla Türkiye’nin dört bir yanına tazeliğini koruyarak ulaştırılır.'
-    },
-  ];
-  return (
-    <div className="lezzet-yolculugu">
-      <h1>Lezzetin Yolculuğu</h1>
-      <p className="intro">Mansüt Gıda’da süt ürünlerinin sofranıza ulaşana kadar geçtiği aşamaları keşfedin.</p>
-      <div className="stages">
-        {stages.map((stage, i) => (
-          <div className="stage-card" key={i}>
-            <img src={stage.img} alt={stage.title} />
-            <div className="stage-info">
-              <h2>{stage.title}</h2>
-              <p>{stage.desc}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+// LezzetYolculugu sayfası kaldırıldı
 function Bayiliklerimiz() {
   return (
     <div className="page bayilikler-page">
@@ -256,10 +301,10 @@ function Urunlerimiz() {
     {
       title: 'Yoğurt Çeşitleri',
       products: [
-        { name: 'Tam Yağlı Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
-        { name: 'Yarım Yağlı Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
-        { name: 'Meyveli Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
-        { name: 'Organik Yoğurt', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Tam Yağlı Yoğurt', image: 'https://lh6.googleusercontent.com/proxy/uzy16lM9qJz14mR9KBcfyJOpCPHcIZTRq0jjoqk96qd5CXJrJOFilfoomt0tp2Z9kG5sa6wVlZBsOjJgLJvXNa9z4hu_C_fPZCXACi5Tgrh9WAeN1SkTOPCum3CvpvDYK23SGAZlHbB0u7KkOqnLC7rhBRUnSzU' },
+        { name: 'Yarım Yağlı Yoğurt', image: 'https://lh6.googleusercontent.com/proxy/uzy16lM9qJz14mR9KBcfyJOpCPHcIZTRq0jjoqk96qd5CXJrJOFilfoomt0tp2Z9kG5sa6wVlZBsOjJgLJvXNa9z4hu_C_fPZCXACi5Tgrh9WAeN1SkTOPCum3CvpvDYK23SGAZlHbB0u7KkOqnLC7rhBRUnSzU' },
+        { name: 'Meyveli Yoğurt', image: 'https://lh6.googleusercontent.com/proxy/uzy16lM9qJz14mR9KBcfyJOpCPHcIZTRq0jjoqk96qd5CXJrJOFilfoomt0tp2Z9kG5sa6wVlZBsOjJgLJvXNa9z4hu_C_fPZCXACi5Tgrh9WAeN1SkTOPCum3CvpvDYK23SGAZlHbB0u7KkOqnLC7rhBRUnSzU' },
+        { name: 'Organik Yoğurt', image: 'https://lh6.googleusercontent.com/proxy/uzy16lM9qJz14mR9KBcfyJOpCPHcIZTRq0jjoqk96qd5CXJrJOFilfoomt0tp2Z9kG5sa6wVlZBsOjJgLJvXNa9z4hu_C_fPZCXACi5Tgrh9WAeN1SkTOPCum3CvpvDYK23SGAZlHbB0u7KkOqnLC7rhBRUnSzU' },
         
       ]
     },
@@ -276,10 +321,10 @@ function Urunlerimiz() {
     {
       title: 'İçecekler',
       products: [
-        { name: 'Ayran', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
-        { name: 'Kefir', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
-        { name: 'Sütlü İçecekler', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
-        { name: 'Meyveli Ayran', image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=300&q=80' },
+        { name: 'Ayran', image: 'https://aygingurme.com/dimg/urun/78834ayran-yeni-cam-sise-.jpg' },
+        { name: 'Kefir', image: 'https://aygingurme.com/dimg/urun/78834ayran-yeni-cam-sise-.jpg' },
+        { name: 'Sütlü İçecekler', image: 'https://aygingurme.com/dimg/urun/78834ayran-yeni-cam-sise-.jpg' },
+        { name: 'Meyveli Ayran', image: 'https://aygingurme.com/dimg/urun/78834ayran-yeni-cam-sise-.jpg' },
      
       ]
     }

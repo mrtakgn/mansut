@@ -389,6 +389,89 @@ body {
   line-height: 1.6;
 }
 
+/* Journey Slider */
+.journey-slider {
+  margin-top: var(--spacing-2xl);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 8px 32px var(--shadow);
+  padding: var(--spacing-2xl);
+}
+
+.journey-slider-header h2 {
+  color: var(--primary-color);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  text-align: center;
+}
+
+.journey-slider-header p {
+  color: var(--text-light);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.journey-viewport {
+  overflow: hidden;
+}
+
+.journey-track {
+  display: flex;
+  gap: 0; /* full-width slides */
+}
+
+.journey-card {
+  min-width: 100%;
+  max-width: 100%;
+  background: var(--bg-color);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+.journey-card img {
+  width: 100%;
+  height: clamp(200px, 35vw, 360px);
+  object-fit: cover;
+}
+
+.journey-info {
+  padding: var(--spacing-lg);
+}
+
+.journey-info h3 {
+  color: var(--primary-color);
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-sm);
+}
+
+.journey-info p {
+  color: var(--text-light);
+}
+
+.journey-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: var(--spacing-xl);
+}
+
+.journey-dots .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-normal), transform var(--transition-fast);
+}
+
+.journey-dots .dot:hover { transform: scale(1.1); }
+.journey-dots .dot.active { background: var(--primary-color); }
+
 /* Products Page Styles */
 .products-header {
   text-align: center;
